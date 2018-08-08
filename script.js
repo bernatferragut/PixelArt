@@ -1,89 +1,74 @@
-// PIXEL ART
+// CODE
 window.onload = function() {
-    // Canvas creation
-    let canvas = document.createElement('canvas');
-
-    // Context creation
-    let ctx = canvas.getContext('2d');
-
-    // Document size 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Adding to the document
-    document.body.appendChild(canvas);
-
-    // Drawing Canvas
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    // Particles Object
-    let particles = {};
-    let particleIndex = 0;
-    let particleNum = 1000
-    let sizeX = Math.random() * 2 + 0.5;
-    let sizeY = Math.random() * 2 + 0.5;;
-
-    //*********************************************
-    // Particle Object => Properties
-    function Particle() {
-        this.x = canvas.width/2;
-        this.y = canvas.height/2;
-        this.vx = Math.random() * 10 - 5;
-        this.vy = Math.random() * 10 - 5;
-        this.gravity = -0.5;
-        particleIndex++;
-        // add a new particle inside the particles object
-        particles[particleIndex] = this;
-        // we assign an index
-        this.id = particleIndex;
-        // we assign some life
-        this.life = 0;
-        this.maxLife = Math.random() * 30 + 10;
-        this.color = "hsl("+parseInt(Math.random() * 60, 10)+", 50%, 50%)";
+  
+  // getting the CANVAS
+  let canvas = document.querySelector('canvas');
+  // setting the canvas context
+  let ctx = canvas.getContext('2d');
+  // getting canvas size
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  // color and size
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // global vars
+  let colors = ['#FFAB02','#E88F0C','#FF8000','#E8650D','#FF4E03'];
+  // let particles = [];
+  // let partNum = 300;
+  
+  // *** Particle Object ***
+  // Attributes
+  let Particle = function() {
+    this.size = 5;
+    this.posX = 100;
+    this.posY = 100;
+    this.velX = 3;
+    this.velY = 3;
+    this.gravity = 0.1;
+    this.colors = colors;
     }
-
-    // Particle Object => Methods
-    Particle.prototype.draw = function() {
-        this.x += this.vx;
-        this.y += this.vy;
-        // vortex effect
-        if(Math.random() < 0.5) {
-            this.vx = Math.random() * 20 - 10;
-            this.vy = Math.random() * 20 - 10;
-        }
-
-        this.vy -= this.gravity;
-        this.life++;
-        if(this.life >= this.maxLife) {
-            delete particles[this.id];
-        }
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y,sizeX,sizeY);
+  // Methods
+  Particle.prototype.draw = function() {
+    // particle
+    let rnd = Math.floor(Math.random()*5);
+    ctx.fillStyle = colors[rnd];
+    ctx.fillRect(this.posX, this.posY, this.size, this.size);
+    // step
+    this.posX += this.velX;
+    this.posY += this.velY;
+    this.velY += this.gravity;
+    // rebounding on both axes
+    if(this.posX+this.size > canvas.width || this.posX-this.size < 0)  {
+      this.velX = -this.velX
     }
-    //*********************************************
-
-    // Particles cretion
-    // for (let i=0; i < particleNum; i++) {
-    //     new Particle();
+    if(this.posY+this.size > canvas.height || this.posY-this.size < 0)  {
+      this.velY = -this.velY
+    }
+  }
+  // *** Particle Object ***
+  
+  // creating multiple particles
+  // for(let i=0; i < partNum; i++) {
+  //   particles.push(new Particle());
+  // }
+  let p = new Particle();
+  
+  // *** Animation ***
+  function animate() {
+    // animation function
+    requestAnimationFrame(animate)
+    // erase canvas
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // animation for each particle
+    // for(let part in particles) {
+    //   particles[part].draw();
     // }
+    p.draw();
     
-    // drawing loop
-    this.setInterval(function() {
-        //adding color effect part1
-        ctx.globalCompositeOperation  = "source-over";
-        //clean canvas
-        ctx.fillStyle = 'rgba(0,0,0,0.95)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        // create an emiter
-        for (let i=0; i < particleNum; i++) {
-            new Particle();
-        }
-        //adding color effect part2
-        ctx.globalCompositeOperation = "lighter";
-        // draw particles
-        for (let i in particles) {
-            particles[i].draw();
-        }
-    }, 30);
+  }
+  animate();
+  // *** Animation ***
 }
+
