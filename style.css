@@ -1,4 +1,5 @@
-body {
+body, input {
   margin: 0px;
   padding: 0px;
+  background-color: black;
 }
