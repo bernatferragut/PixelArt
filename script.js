@@ -1,4 +1,3 @@
-// CODE
 window.onload = function() {
   
   // getting the CANVAS
@@ -13,23 +12,22 @@ window.onload = function() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
   // global vars
-  let colors = ['#FFAB02','#E88F0C','#FF8000','#E8650D','#FF4E03'];
-  // let particles = [];
-  // let partNum = 300;
+  let colors = ['#8DDDF7','#B1A7F2','#B1A7F2','#E9A1F7','#AC77E4'];
   
   // *** Particle Object ***
   // Attributes
   let Particle = function() {
+    this.message= 'particle control';
     this.size = 5;
     this.posX = 100;
     this.posY = 100;
-    this.velX = 3;
-    this.velY = 3;
+    this.velX=1;
+    this.velY = 1;
     this.gravity = 0.1;
     this.colors = colors;
     }
   // Methods
-  Particle.prototype.draw = function() {
+  Particle.prototype.draw = function(velX) {
     // particle
     let rnd = Math.floor(Math.random()*5);
     ctx.fillStyle = colors[rnd];
@@ -47,12 +45,14 @@ window.onload = function() {
     }
   }
   // *** Particle Object ***
-  
-  // creating multiple particles
-  // for(let i=0; i < partNum; i++) {
-  //   particles.push(new Particle());
-  // }
   let p = new Particle();
+  
+  // GUI particle control :)
+  let gui = new dat.GUI();
+  gui.add(p, 'message');
+  gui.add(p, 'velX', -20, 20);
+  gui.add(p, 'velY', -20, 20);
+  gui.add(p, 'gravity', -1,1);
   
   // *** Animation ***
   function animate() {
@@ -61,14 +61,13 @@ window.onload = function() {
     // erase canvas
     ctx.fillStyle = 'rgba(0,0,0,0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // animation for each particle
-    // for(let part in particles) {
-    //   particles[part].draw();
-    // }
     p.draw();
-    
   }
   animate();
-  // *** Animation ***
+
 }
+
+
+
+
 

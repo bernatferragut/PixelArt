@@ -1,4 +1,4 @@
-Sliding Spheres
+Sliding Sphere
 ===============
 
-Canvas + Sliders = Playing with gravity
+Canvas + GUI.dat as virtual sliders = Playing with gravity over a single particle
