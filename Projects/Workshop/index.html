@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+
+      <link rel="stylesheet" type="text/css" href="main.css">
+      <script src="./node_modules/web3/dist/web3.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  </head>
+
+  <body>
+      <div class="container">
+          <h1>Cocktail and Code Test App</h1>
+
+          <h2 id="person"></h2>
+
+          <label for="name" class="col-lg-2 control-label">Name</label>
+          <input id="name" type="text">
+          <label for="name" class="col-lg-2 control-label">Age</label>
+          <input id="age" type="text">
+
+          <button id="button">Update</button>
+          <button id="button2">Get</button>
+      </div>
+  </body>
+
+  <script>
+
+    var abi = [
+      {
+        constant: false,
+        inputs: [
+          {
+            name: "_name",
+            type: "string"
+          },
+          {
+            name: "_age",
+            type: "uint256"
+          }
+        ],
+        name: "setPerson",
+        outputs: [],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "function"
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "getPerson",
+        outputs: [
+          {
+            name: "",
+            type: "string"
+          },
+          {
+            name: "",
+            type: "uint256"
+          }
+        ],
+        payable: false,
+        stateMutability: "view",
+        type: "function"
+      }
+    ];
+
+    if (typeof web3 !== "undefined") {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // set the provider you want from Web3.providers
+      web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+    }
+    web3.eth.defaultAccount = web3.eth.accounts[0];
+
+    var WorkshopContract = web3.eth.contract(abi);
+    var Workshop = WorkshopContract.at("0xDcE5E0fb3534ea2bd8C2538427151F767eA00062");
+    console.log(Workshop);
+
+    function updatePerson() {
+      Workshop.getPerson(function(err, res) {
+        if (!err && res) {
+          $("#person").html(res[0] + " (" + res[1] + " years old)");
+          console.log(res);
+        } else console.error(err);
+      });
+    }
+
+    $("#button").click(function() {
+      Workshop.setPerson($("#name").val(), $("#age").val(), function(err, res) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+
+    $("#button2").click(function() {
+      updatePerson();
+    });
+
+    updatePerson();
+
+  </script>
+
+</html>
